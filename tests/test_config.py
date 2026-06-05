@@ -4,7 +4,9 @@ import shutil
 import sys
 import os
 
+
 from pathlib import Path
+from pprint import pprint
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
@@ -17,7 +19,7 @@ class TestConfigManager(unittest.TestCase):
         self.default_folder = default_config._DEFAULT_CONFIG_FOLDER
 
         config = ConfigManager(self.test_folder)
-        print(list(Path(self.test_folder).iterdir()))
+        # print(list(Path(self.test_folder).iterdir()))
     
     def tearDown(self):
         shutil.rmtree(self.default_folder)
@@ -43,6 +45,12 @@ class TestConfigManager(unittest.TestCase):
         config = ConfigManager('./test_folder')
         folder = config.config_folder
         self.assertTrue(Path(folder).exists())
+
+    def test_get_list_config_file(self):
+        config = ConfigManager(Path(self.test_folder))
+        # config._EXTENTION.append('*.lol')
+        pprint(config.get_list_config_file())
+
 
 if __name__ == '__main__':
     unittest.main()
