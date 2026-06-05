@@ -68,9 +68,8 @@ class ConfigManager:
             configs.extend(self._config_folder.glob(ext))
 
         return configs
-
-        
-
+    
+    
 if __name__ == '__main__':
 
     config = ConfigManager('./lol')
