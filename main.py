@@ -6,7 +6,7 @@ from pprint import pprint
 def main():
     config_manager = ConfigManager()
     controller = VPNController(config_manager)
-    app = VPNGUI()
+    app = VPNGUI(controller)
     app.run()
 
 
