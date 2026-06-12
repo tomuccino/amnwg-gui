@@ -39,6 +39,7 @@ class VPNGUI:
         self._window.resizable(width=False, height=False)
 
         self._main_widget()
+        self._refresh_config_list()
 
     def _main_widget(self):
         """Создание основного виджета-контейнера"""
@@ -129,10 +130,25 @@ class VPNGUI:
         self._status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
     def _reset_config_folder(self):
-        pass
+        """Сбросить теукщую папку с конфигами на дефолтную"""
+        new_dir = self._vpn_controller.reset_config_folder()
+        if new_dir:
+            self._config_folder_var.set(new_dir)
+            self._refresh_config_list()
+            messagebox.showinfo("Успех", f"Папка конфигов изменена на:\n{new_dir}")
+            self._status_bar.config(text=f"Папка изменена: {new_dir}")
 
     def _change_config_folder(self):
-        pass
+        """Сменить папку с конфигами"""
+        new_dir = filedialog.askdirectory(title="Выберите папку с конфигами VPN")
+        if new_dir:
+            if self._vpn_controller.change_config_folder(new_dir):
+                self._config_folder_var.set(self._vpn_controller.config_folder)
+                self._refresh_config_list()
+                messagebox.showinfo("Успех", f"Папка конфигов изменена на:\n{new_dir}")
+                self._status_bar.config(text=f"Папка изменена: {new_dir}")
+            else:
+                messagebox.showerror("Ошибка", "Не удалось изменить папку конфигов")
 
     def _add_config(self):
         pass
@@ -141,7 +157,13 @@ class VPNGUI:
         pass
 
     def _refresh_config_list(self):
-        pass
+        """Обновляем список конфигов в указанной папке"""
+        self._config_listbox.delete(0, tk.END)
+        configs = self._vpn_controller.get_list_config_file()
+
+        if configs:
+            for config in configs:
+                self._config_listbox.insert(tk.END, config.stem)
 
     def _connect_vpn(self):
         pass

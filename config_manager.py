@@ -55,6 +55,11 @@ class ConfigManager:
             raise OSError(f"Ошибка создания папки {self._config_folder}: {e}") from e
 
     @property
+    def default_config_folder(self):
+        """Получаем папку по умолчанию для конфигов"""
+        return self._DEFAULT_CONFIG_FOLDER
+
+    @property
     def config_folder(self) -> Path:
         """Получаем папку для конфигов"""
         return self._config_folder
