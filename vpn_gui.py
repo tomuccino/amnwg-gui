@@ -13,7 +13,12 @@ class VPNGUI:
 
     _window: tk
     _vpn_controller: VPNController
-    _config_folder_var: tk
+    _config_folder_var: tk.StringVar
+    _config_listbox: tk.Listbox
+    _status_var: tk.StringVar
+    _connect_btn: tk.Button
+    _disconnect_btn: tk.Button
+    _status_bar: tk.Label
 
     def __init__(self, vpn_controller: VPNController):
         """Инициализируем графический интерфейс и устанавливаем vpn_controller
@@ -64,9 +69,9 @@ class VPNGUI:
         scrollbar = ttk.Scrollbar(configs_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.config_listbox = tk.Listbox(configs_frame, yscrollcommand=scrollbar.set)
-        self.config_listbox.pack(fill=tk.BOTH, expand=True)
-        scrollbar.config(command=self.config_listbox.yview)
+        self._config_listbox = tk.Listbox(configs_frame, yscrollcommand=scrollbar.set)
+        self._config_listbox.pack(fill=tk.BOTH, expand=True)
+        scrollbar.config(command=self._config_listbox.yview)
 
         # Кнопки управления конфигами
         config_btn_frame = ttk.Frame(configs_frame)
@@ -91,8 +96,8 @@ class VPNGUI:
         status_frame.pack(fill=tk.X, pady=5)
 
         ttk.Label(status_frame, text="Статус:").pack(side=tk.LEFT)
-        self.status_var = tk.StringVar(value="Отключено")
-        ttk.Label(status_frame, textvariable=self.status_var, foreground="red").pack(
+        self._status_var = tk.StringVar(value="Отключено")
+        ttk.Label(status_frame, textvariable=self._status_var, foreground="red").pack(
             side=tk.LEFT, padx=5
         )
 
@@ -100,28 +105,28 @@ class VPNGUI:
         btn_frame = ttk.Frame(vpn_frame)
         btn_frame.pack(fill=tk.X, pady=5)
 
-        self.connect_btn = ttk.Button(
+        self._connect_btn = ttk.Button(
             btn_frame, text="Подключиться", command=self._connect_vpn
         )
-        self.connect_btn.pack(side=tk.LEFT, padx=5)
+        self._connect_btn.pack(side=tk.LEFT, padx=5)
 
-        self.disconnect_btn = ttk.Button(
+        self._disconnect_btn = ttk.Button(
             btn_frame,
             text="Отключиться",
             command=self._disconnect_vpn,
             state=tk.DISABLED,
         )
-        self.disconnect_btn.pack(side=tk.LEFT, padx=5)
+        self._disconnect_btn.pack(side=tk.LEFT, padx=5)
 
         ttk.Button(
             btn_frame, text="Проверить соединение", command=self._test_connection
         ).pack(side=tk.LEFT, padx=5)
 
         # Строка статуса
-        self.status_bar = ttk.Label(
+        self._status_bar = ttk.Label(
             self._window, text="Готов", relief=tk.SUNKEN, anchor=tk.W
         )
-        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+        self._status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
     def _reset_config_folder(self):
         pass
