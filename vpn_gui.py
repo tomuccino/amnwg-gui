@@ -19,6 +19,7 @@ class VPNGUI:
     _connect_btn: tk.Button
     _disconnect_btn: tk.Button
     _status_bar: tk.Label
+    _status_var_label: tk.Label
 
     def __init__(self, vpn_controller: VPNController):
         """Инициализируем графический интерфейс и устанавливаем vpn_controller
@@ -98,9 +99,10 @@ class VPNGUI:
 
         ttk.Label(status_frame, text="Статус:").pack(side=tk.LEFT)
         self._status_var = tk.StringVar(value="Отключено")
-        ttk.Label(status_frame, textvariable=self._status_var, foreground="red").pack(
-            side=tk.LEFT, padx=5
+        self._status_var_label = ttk.Label(
+            status_frame, textvariable=self._status_var, foreground="red"
         )
+        self._status_var_label.pack(side=tk.LEFT, padx=5)
 
         # Кнопки подключения
         btn_frame = ttk.Frame(vpn_frame)
@@ -115,7 +117,7 @@ class VPNGUI:
             btn_frame,
             text="Отключиться",
             command=self._disconnect_vpn,
-            state=tk.DISABLED,
+            # state=tk.DISABLED,
         )
         self._disconnect_btn.pack(side=tk.LEFT, padx=5)
 
@@ -166,13 +168,33 @@ class VPNGUI:
                 self._config_listbox.insert(tk.END, config.stem)
 
     def _connect_vpn(self):
-        pass
+        selection = self._config_listbox.curselection()
+        if selection:
+            idx = selection[0]
+            config_name = self._config_listbox.get(idx)
+
+            if self._vpn_controller.connect_vpn(config_name):
+                self._status_var.set("Подключено")
+                status_label = self._status_var_label
+                status_label.configure(foreground="green")
+                self._connect_btn.config(state=tk.DISABLED)
+                self._disconnect_btn.config(state=tk.NORMAL)
+                self._status_bar.config(text=f"Подключено к {config_name}")
+                # messagebox.showinfo("Успех", f"Подключено к {config_name}")
 
     def _disconnect_vpn(self):
-        pass
+        self._status_bar.config(text="Отключение...")
+
+        if self._vpn_controller.disconnect_vpn():
+            self._status_var.set("Отключено")
+            status_label = self._status_var_label
+            status_label.configure(foreground="red")
+            self._connect_btn.config(state=tk.NORMAL)
+            # self.disconnect_btn.config(state=tk.DISABLED)
+            self._status_bar.config(text="Отключено от VPN")
 
     def _test_connection(self):
-        pass
+        print(self._vpn_controller.show_status())
 
     def run(self):
         self._window.mainloop()

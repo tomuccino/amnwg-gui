@@ -5,3 +5,4 @@ configs/*.conf
 venv/
 .idea/
 .vscode/
+.ipynb_checkpoints
